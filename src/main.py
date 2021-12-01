@@ -1,10 +1,21 @@
 from fastai.text.all import *
 import torchtext
+from args import args_parser
+from utils import *
 
-train_iter, test_iter = torchtext.datasets.IMDB(root='../data', split=('train', 'test'))
+args = args_parser
 
-train_df = pd.DataFrame(train_iter, columns=['label', 'text'])
-test_df = pd.DataFrame(test_iter, columns=['label', 'text'])
+if args.dataset == 'imdb':
+    train_iter, test_iter = torchtext.datasets.IMDB(root='../data', split=('train', 'test'))
+
+    train_df = pd.DataFrame(train_iter, columns=['label', 'text'])
+    test_df = pd.DataFrame(test_iter, columns=['label', 'text'])
+
+if args.augment=='rs':
+    augment = train_df.copy()
+    augment.apply(lambda row: random_swap(row['text'],args.swap_prob))
+    train_df.append(augment)
+    train_df.drop_duplicates
 
 
 train_lm = TextDataLoaders.from_df(train_df, text_col='text', is_lm=True)

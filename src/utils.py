@@ -2,12 +2,16 @@ import random
 import torch
 from torch.utils.data import Dataset
 
-def random_swap(words, n):
-    words = words.split()
-    for i in range(n):
-        words = swap(words)
+def random_swap(words, p):
+    n = int(len(words)*p)
+    if n<1:
+        return words
+    else:
+        words = words.split()
+        for i in range(n):
+            words = swap(words)
 
-    return " ".join(words)
+        return " ".join(words)
 
 
 def swap(words):
