@@ -1,5 +1,6 @@
 import random
-
+import torch
+from torch.utils.data import Dataset
 
 def random_swap(words, n):
     words = words.split()
@@ -15,3 +16,15 @@ def swap(words):
     words[idx[0]], words[idx[1]] = words[idx[1]], words[idx[0]]
 
     return words
+'''
+class PandasDataset(Dataset):
+    def __init__(self, dataframe):
+        self.dataframe = dataframe
+
+    def __len__(self):
+        return len(self.dataframe)
+
+    def __getitem__(self, index):
+        return self.dataframe.iloc[index]
+
+'''
