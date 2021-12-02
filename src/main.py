@@ -39,6 +39,6 @@ learn.fit_one_cycle(1, slice(1e-2/(2.6**4),1e-2))
 learn.freeze_to(-3)
 learn.fit_one_cycle(1, slice(5e-3/(2.6**4),5e-3))
 
-dl = learn.dls.test_dl(test_df, with_label= True )
+test_dl = learn.dls.test_dl(test_df, with_label= True )
 acc = learn.validate(dl=test_dl)[1]
 print(acc)
