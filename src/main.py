@@ -3,17 +3,14 @@ import torchtext
 from args import args_parser
 from utils import *
 
+random.seed(10)
 args = args_parser
 
-if args.dataset == 'imdb':
-    train_iter, test_iter = torchtext.datasets.IMDB(root='../data', split=('train', 'test'))
-
-    train_df = pd.DataFrame(train_iter, columns=['label', 'text'])
-    test_df = pd.DataFrame(test_iter, columns=['label', 'text'])
+train_df, test_df = args.get_dataset(args.dataset, args.size)
 
 if args.augment=='rs':
     augment = train_df.copy()
-    augment.apply(lambda row: random_swap(row['text'],args.swap_prob))
+    augment.apply(lambda row: random_swap(row['text'],args.p))
     train_df.append(augment)
     train_df.drop_duplicates
 
