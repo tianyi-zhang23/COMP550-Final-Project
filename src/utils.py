@@ -1,8 +1,9 @@
 import random
-from collections import defaultdict
 from typing import Any
 
 import torch
+from nltk import word_tokenize
+from nltk.corpus import stopwords, wordnet
 from torch.utils.data import Dataset
 import nlpaug.augmenter.word as naw
 from enum import Enum
@@ -23,12 +24,15 @@ def get_tokenized_data(corpus):
 
 stop_words = stopwords.words('english')
 
+
 class Language(Enum):
     German = 0
+    French = 1
 
 
 backtranslation_model_names = {
-    Language.German: ('facebook/wmt19-en-de', 'facebook/wmt19-de-en')
+    Language.German: ('facebook/wmt19-en-de', 'facebook/wmt19-de-en'),
+    Language.French: ('Helsinki-NLP/opus-mt-en-fr', 'Helsinki-NLP/opus-mt-fr-en')
 }
 
 backtranslation_aug: dict[Language, Any] = {}
