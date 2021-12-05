@@ -35,26 +35,26 @@ backtranslation_model_names = {
     Language.French: ('Helsinki-NLP/opus-mt-en-fr', 'Helsinki-NLP/opus-mt-fr-en')
 }
 
-backtranslation_aug: dict[Language, Any] = {}
+_backtranslation_aug: dict[Language, Any] = {}
 
 
 def backtranslation(text: str, lang: Language) -> str:
-    if lang not in backtranslation_aug:
-        backtranslation_aug[lang] = naw.BackTranslationAug(
+    if lang not in _backtranslation_aug:
+        _backtranslation_aug[lang] = naw.BackTranslationAug(
             from_model_name=backtranslation_model_names[lang][0],
             to_model_name=backtranslation_model_names[lang][1]
         )
-    return backtranslation_aug[lang].augment(text)
+    return _backtranslation_aug[lang].augment(text)
 
 
-contextual_word_embs_aug = None
+_contextual_word_embs_aug = None
 
 
 def contextual_word_embeddings(text: str) -> str:
-    global contextual_word_embs_aug
-    if contextual_word_embs_aug is None:
-        contextual_word_embs_aug = naw.ContextualWordEmbsAug()
-    return contextual_word_embs_aug.augment(text)
+    global _contextual_word_embs_aug
+    if _contextual_word_embs_aug is None:
+        _contextual_word_embs_aug = naw.ContextualWordEmbsAug()
+    return _contextual_word_embs_aug.augment(text)
 
 
 def random_swap(words, p):
