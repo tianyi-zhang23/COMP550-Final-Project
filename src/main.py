@@ -12,7 +12,7 @@ if args.augment=='rs':
     augment = train_df.copy()
     augment.apply(lambda row: random_swap(row['text'],args.p))
     train_df.append(augment)
-    train_df.drop_duplicates
+    train_df.drop_duplicates()
 
 
 train_lm = TextDataLoaders.from_df(train_df, text_col='text', is_lm=True)
