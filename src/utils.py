@@ -44,11 +44,7 @@ def backtranslation(text: str, lang: Language) -> str:
             from_model_name=backtranslation_model_names[lang][0],
             to_model_name=backtranslation_model_names[lang][1]
         )
-    try:
-        return _backtranslation_aug[lang].augment(text)
-    except:
-        print("utils::backtranslation ENCOUNTERS AN ERROR")
-        return "utils::backtranslation ENCOUNTERS AN ERROR"
+    return _backtranslation_aug[lang].augment(text)
 
 
 _contextual_word_embs_aug = None
@@ -58,11 +54,7 @@ def contextual_word_embeddings(text: str) -> str:
     global _contextual_word_embs_aug
     if _contextual_word_embs_aug is None:
         _contextual_word_embs_aug = naw.ContextualWordEmbsAug()
-    try:
-        return _contextual_word_embs_aug.augment(text)
-    except:
-        print("utils::backtranslation ENCOUNTERS AN ERROR")
-        return "utils::backtranslation ENCOUNTERS AN ERROR"
+    return _contextual_word_embs_aug.augment(text)
 
 
 def random_swap(words, p):
