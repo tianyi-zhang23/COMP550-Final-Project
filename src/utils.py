@@ -44,7 +44,11 @@ def backtranslation(text: str, lang: Language) -> str:
             from_model_name=backtranslation_model_names[lang][0],
             to_model_name=backtranslation_model_names[lang][1]
         )
-    return _backtranslation_aug[lang].augment(text)
+    try:
+        return _backtranslation_aug[lang].augment(text)
+    except:
+        print("utils::backtranslation ENCOUNTERS AN ERROR")
+        return "utils::backtranslation ENCOUNTERS AN ERROR"
 
 
 _contextual_word_embs_aug = None
