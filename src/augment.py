@@ -14,8 +14,8 @@ def load_imdb_online():
 
 def save_imdb_original():
     train_df, test_df = load_imdb_online()
-    train_df.to_pickle("./imdb_train_df_original.pkl")
-    test_df.to_pickle("./imdb_test_df_original.pkl")
+    train_df.to_pickle("./imdb_train_df_original.pkl", protocol=4)
+    test_df.to_pickle("./imdb_test_df_original.pkl", protocol=4)
 
 
 def save_imdb_backtrans(lang, begin_chunk_idx = 0):
@@ -35,3 +35,4 @@ if __name__ == '__main__':
     tqdm.pandas()
     # save_imdb_original()
     #save_imdb_backtrans(Language.German)
+    save_imdb_contextual_word_embeddings()
