@@ -58,7 +58,11 @@ def contextual_word_embeddings(text: str) -> str:
     global _contextual_word_embs_aug
     if _contextual_word_embs_aug is None:
         _contextual_word_embs_aug = naw.ContextualWordEmbsAug()
-    return _contextual_word_embs_aug.augment(text)
+    try:
+        return _contextual_word_embs_aug.augment(text)
+    except:
+        print("utils::backtranslation ENCOUNTERS AN ERROR")
+        return "utils::backtranslation ENCOUNTERS AN ERROR"
 
 
 def random_swap(words, p):
