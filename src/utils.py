@@ -35,7 +35,7 @@ backtranslation_model_names = {
     Language.French: ('Helsinki-NLP/opus-mt-en-fr', 'Helsinki-NLP/opus-mt-fr-en')
 }
 
-_backtranslation_aug: dict[Language, Any] = {}
+_backtranslation_aug: 'dict[Language, Any]' = {}
 
 
 def backtranslation(text: str, lang: Language) -> str:
