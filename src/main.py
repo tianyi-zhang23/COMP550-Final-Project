@@ -3,8 +3,6 @@ import torchtext
 from args import args_parser
 from utils import *
 
-
-
 def main():
     random.seed(10)
     args = args_parser
@@ -63,3 +61,5 @@ def main():
     return
 
 
+if __name__ == "__main__":
+    main()
