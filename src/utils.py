@@ -9,7 +9,7 @@ import torch
 from nltk import word_tokenize
 from nltk.corpus import stopwords, wordnet
 from torch.utils.data import Dataset
-import nlpaug.augmenter.word as naw
+#import nlpaug.augmenter.word as naw
 from enum import Enum
 
 # Preprocessing Functions
@@ -62,11 +62,11 @@ def contextual_word_embeddings(text: str) -> str:
 
 
 def random_swap(words, p):
+    words = words.split()
     n = int(len(words) * p)
     if n < 1:
         return words
     else:
-        words = words.split()
         for i in range(n):
             words = swap(words)
 
@@ -115,10 +115,11 @@ def get_synonyms(word):
   return list(synonyms)
 
 
-def synonym_replacement(sentence, n):
-  # n = # words to replace
-
+def synonym_replacement(sentence, p):
   words = sentence.split()
+  # n = # words to replace
+  n = int(len(words)*p)
+
   new_words = words.copy()
   random_word_list = list(set([word for word in words if word not in stop_words]))
   random.shuffle(random_word_list)
@@ -136,15 +137,39 @@ def synonym_replacement(sentence, n):
       break
 
   return ' '.join(new_words)
-'''
-class PandasDataset(Dataset):
-    def __init__(self, dataframe):
-        self.dataframe = dataframe
+
+
+def random_insertion(words, p):
+    words = words.split()
+    n = int(len(words)*p)
+    new_words = words.copy()
+
+    for _ in range(n):
+        add_word(new_words)
+
+    sentence = ' '.join(new_words)
+    return sentence
+
+
+def add_word(new_words):
+    synonyms = []
+    counter = 0
+
+    while len(synonyms) < 1:
+        random_word = new_words[random.randint(0, len(new_words) - 1)]
+        synonyms = get_synonyms(random_word)
+        counter += 1
+        if counter >= 10:
+            return
+
+    random_synonym = synonyms[0]
+    random_idx = random.randint(0, len(new_words) - 1)
+    new_words.insert(random_idx, random_synonym)
 
 
 def split_data_set(size, train_iter, test_iter):
-    ratio = len(train_iter)/(len(train_iter)+ len(test_iter))
-    test_size = int((1-ratio) * size/ratio)
+    train_size = int(0.8*size)
+    test_size = int(0.2*size)
     train_list, test_list= list(train_iter), list(test_iter)
     num_class = len(set([label for (label, text) in train_iter]))
     train_idx = [i for i in range(len(train_list))]
@@ -153,7 +178,7 @@ def split_data_set(size, train_iter, test_iter):
     random.shuffle(train_list)
     random.shuffle(test_list)
 
-    sample_train_idx = np.random.choice(train_idx,size , replace=False)
+    sample_train_idx = np.random.choice(train_idx,train_size , replace=False)
     sample_test_idx = np.random.choice(test_idx, test_size, replace=False)
 
     sample_train = [train_list[i] for i in sample_train_idx ]
@@ -163,20 +188,64 @@ def split_data_set(size, train_iter, test_iter):
 
 
 def get_dataset(dataset, size):
-    sizes = {'s':500, 'm':2000, 'l':5000}
-    size = sizes[size]
 
     if dataset == 'imdb':
         train_iter, test_iter = torchtext.datasets.IMDB(root='../data', split=('train', 'test'))
-    elif dataset =='agnews':
-        train_iter, test_iter = torchtext.datasets.AG_NEWS(root='../data', split=('train', 'test'))
-    elif dataset =='sogou':
-        train_iter, test_iter = torchtext.datasets.SogouNews(root='../data', split=('train', 'test'))
-    elif dataset=='amz':
-        train_iter, test_iter = torchtext.datasets.AmazonReviewPolarity(root='../data', split=('train', 'test'))
-    elif dataset == 'yelp':
-        train_iter, test_iter = torchtext.datasets.YelpReviewPolarity(root='../data', split=('train', 'test'))
-    elif dataset=='yahoo':
-        train_iter, test_iter = torchtext.datasets.YahooAnswers(root='../data', split=('train', 'test'))
 
-    return split_data_set(size, train_iter, test_iter)
+    elif dataset =='agnews':
+        if size == 's':
+            train_df = pd.read_pickle("../data/AG_NEWS/agnews_small_train.pkl")
+            test_df = pd.read_pickle('../data/AG_NEWS/agnews_small_test.pkl')
+        elif size == 'm':
+            train_df = pd.read_pickle("../data/AG_NEWS/agnews_med_train.pkl")
+            test_df = pd.read_pickle('../data/AG_NEWS/agnews_med_test.pkl')
+        elif size =='l':
+            train_df = pd.read_pickle("../data/AG_NEWS/agnews_large_train.pkl")
+            test_df = pd.read_pickle('../data/AG_NEWS/agnews_large_test.pkl')
+
+    elif dataset == 'sogou':
+
+        if size == 's':
+            train_df = pd.read_pickle("../data/SogouNews/sogou_small_train.pkl")
+            test_df = pd.read_pickle('../data/SogouNews/sogou_small_test.pkl')
+        elif size == 'm':
+            train_df = pd.read_pickle("../data/SogouNews/sogou_med_train.pkl")
+            test_df = pd.read_pickle('../data/SogouNews/sogou_med_test.pkl')
+        elif size == 'l':
+            train_df = pd.read_pickle("../data/SogouNews/sogou_large_train.pkl")
+            test_df = pd.read_pickle('../data/SogouNews/sogou_large_test.pkl')
+
+    elif dataset == 'amz':
+
+        if size == 's':
+            train_df = pd.read_pickle("../data/AmazonReviewPolarity/amz_small_train.pkl")
+            test_df = pd.read_pickle('../data/AmazonReviewPolarity/amz_small_test.pkl')
+        elif size == 'm':
+            train_df = pd.read_pickle("../data/AmazonReviewPolarity/amz_med_train.pkl")
+            test_df = pd.read_pickle('../data/AmazonReviewPolarity/amz_med_test.pkl')
+        elif size == 'l':
+            train_df = pd.read_pickle("../data/AmazonReviewPolarity/amz_large_train.pkl")
+            test_df = pd.read_pickle('../data/AmazonReviewPolarity/amz_large_test.pkl')
+    elif dataset == 'yelp':
+        if size == 's':
+            train_df = pd.read_pickle("../data/YelpReviewPolarity/yelp_small_train.pkl")
+            test_df = pd.read_pickle('../data/YelpReviewPolarity/yelp_small_test.pkl')
+        elif size == 'm':
+            train_df = pd.read_pickle("../data/YelpReviewPolarity/yelp_med_train.pkl")
+            test_df = pd.read_pickle('../data/YelpReviewPolarity/yelp_med_test.pkl')
+        elif size == 'l':
+            train_df = pd.read_pickle("../data/YelpReviewPolarity/yelp_large_train.pkl")
+            test_df = pd.read_pickle('../data/YelpReviewPolarity/yelp_large_test.pkl')
+
+    elif dataset=='yahoo':
+        if size == 's':
+            train_df = pd.read_pickle("../data/YahooAnswers/yahoo_small_train.pkl")
+            test_df = pd.read_pickle('../data/YahooAnswers/yahoo_small_test.pkl')
+        elif size == 'm':
+            train_df = pd.read_pickle("../data/YahooAnswers/yahoo_med_train.pkl")
+            test_df = pd.read_pickle('../data/YahooAnswers/yahoo_med_test.pkl')
+        elif size == 'l':
+            train_df = pd.read_pickle("../data/YahooAnswers/yahoo_large_train.pkl")
+            test_df = pd.read_pickle('../data/YahooAnswers/yahoo_large_test.pkl')
+
+    return train_df, test_df
