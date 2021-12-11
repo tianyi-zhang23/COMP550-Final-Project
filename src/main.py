@@ -2,12 +2,16 @@ from fastai.text.all import *
 import torchtext
 from args import args_parser
 from utils import *
+from data import *
+
+
+pd.read_pickle("agnews_small_train.pkl").to_pickle("agnews_small_train_p4.pkl",protocol=4)
 
 def main():
     random.seed(10)
-    args = args_parser
+    args = args_parser()
     
-    train_df, test_df = get_dataset(args.dataset, args.size)
+    train_df, test_df = get_dataset(args.data, args.size)
     augment = []
     if args.randswap:
         swapped = train_df.copy()
@@ -27,8 +31,8 @@ def main():
         augment.append(randin)
 
     for aug in augment:
-        train_df.append(augment)
-    train_df.drop_duplicates()
+        train_df = train_df.append(aug)
+    train_df = train_df.drop_duplicates()
     
     
     train_lm = TextDataLoaders.from_df(train_df, text_col='text', is_lm=True)
