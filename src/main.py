@@ -7,7 +7,7 @@ def main():
     random.seed(10)
     args = args_parser
     
-    train_df, test_df = args.get_dataset(args.dataset, args.size)
+    train_df, test_df = get_dataset(args.dataset, args.size)
     augment = []
     if args.randswap:
         swapped = train_df.copy()
