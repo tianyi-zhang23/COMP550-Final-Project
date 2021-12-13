@@ -62,7 +62,7 @@ def main():
     test_dl = learn.dls.test_dl(test_df, with_label= True )
     acc = learn.validate(dl=test_dl)[1]
     print(acc)
-    return
+    return acc
 
 
 if __name__ == "__main__":
