@@ -16,8 +16,6 @@ def args_parser():
     parser.add_argument('--synrep', type=bool, default=False,
                         help="synonym replacement")
 
-    parser.add_argument('--randdel', type=bool, default=False,
-                        help='random deletion')
 
     parser.add_argument('--randin', type=bool, default=False,
                         help='random insertion')
@@ -27,4 +25,7 @@ def args_parser():
 
     parser.add_argument('--size', type=str, default='s',
                         help="s=500, m=2000, l=5000")
+
+    args = parser.parse_args()
+    return args
 
