@@ -5,7 +5,6 @@ from utils import *
 from data import *
 
 
-pd.read_pickle("agnews_small_train.pkl").to_pickle("agnews_small_train_p4.pkl",protocol=4)
 
 def main():
     random.seed(10)
