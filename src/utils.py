@@ -71,6 +71,45 @@ def random_swap(words, p):
             words = swap(words)
 
         return " ".join(words)
+      
+def EDA(sentence, p ):
+  augmented = []
+  for row in train_copy['text']:
+    choices = ["del", "ins", "swap", "syn"]
+    choice = random.choice(choices)
+    choices.remove(choice)
+    choice2 = random.choice(choices)
+    if choice == "del":
+      augmented.append(random_deletion(row, p))
+    elif choice == "ins":
+      augmented.append(random_insertion(row, p))
+    elif choice == "swap":
+      augmented.append(random_swap(row, p))
+    elif choice == 'syn':
+      augmented.append(synonym_replacement(row, p))
+   
+  return augmented
+
+def mod_EDA(sentence, p):
+  augmented = []
+  for row in train_copy['text']:
+    choices = ["del", "ins", "swap", "syn", "no"]
+    choice = random.choice(choices)
+    choices.remove(choice)
+    choice2 = random.choice(choices)
+    if choice == "del":
+      augmented.append(random_deletion(row, p))
+    elif choice == "ins":
+      augmented.append(random_insertion(row, p))
+    elif choice == "swap":
+      augmented.append(random_swap(row, p))
+    elif choice == 'syn':
+      augmented.append(synonym_replacement(row, p))
+    else:
+      augmented.append(row)
+   
+  return augmented
+  
 
 def random_deletion(words, p):
     words = words.split()
