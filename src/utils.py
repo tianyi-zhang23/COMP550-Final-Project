@@ -9,7 +9,7 @@ import torch
 from nltk import word_tokenize
 from nltk.corpus import stopwords, wordnet
 from torch.utils.data import Dataset
-#import nlpaug.augmenter.word as naw
+import nlpaug.augmenter.word as naw
 from enum import Enum
 
 # Preprocessing Functions
@@ -204,6 +204,56 @@ def add_word(new_words):
     random_synonym = synonyms[0]
     random_idx = random.randint(0, len(new_words) - 1)
     new_words.insert(random_idx, random_synonym)
+    
+def syntheticnoise(sentence, threshold):
+
+  words = sentence.split()
+
+  if len(words) == 1:
+    return sentence
+
+  characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+                'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+
+  new_words = []
+
+  for word in words:
+    # if word is too short, skip augmenting
+    r = random.uniform(0, 1)
+
+    if r > threshold:
+      new_words.append(word)
+
+    else:
+
+      if len(word) <= 2:
+        new_words.append(word)
+
+      else:
+        # decide to do character insertion (0)/deletion (1)/swapping (2) of 2 side by side characters with equal probability
+        noise = [0, 1, 2]
+        choice = random.choice(noise)
+        split_word = list(word)
+
+        if choice == 0: # random insertion
+          idx = random.randint(1, len(split_word)-2)
+          split_word.insert(idx, random.choice(characters))
+          new_words.append(''.join(split_word))
+        
+        elif choice == 1: # random deletion
+          idx = random.randint(1, len(split_word)-2)
+          split_word.pop(idx)
+          new_words.append(''.join(split_word))
+
+        elif choice == 2: # random swap
+          idx = random.randint(1, len(split_word)-2)
+          split_word = list(word)
+          temp = split_word[idx]
+          split_word[idx] = split_word[idx+1]
+          split_word[idx+1] = temp
+          new_words.append(''.join(split_word))
+  
+  return ' '.join(new_words)
 
 
 
